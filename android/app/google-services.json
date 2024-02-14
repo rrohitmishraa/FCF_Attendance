@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "178186610580",
+    "project_id": "fcf-mma",
+    "storage_bucket": "fcf-mma.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178186610580:android:afcb150f2073b8faa25181",
+        "android_client_info": {
+          "package_name": "com.attendance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRJ21xL7wdXbkJ0dbKCrzb1BCXK6MjaxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
