@@ -32,7 +32,7 @@ const storage = new MMKV();
 const Attendance = ({navigation, route}) => {
   const [stuList, setStuList] = useState([]);
   const [attendanceList, setAttendanceList] = useState([]);
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState({});
   const type = route.params;
 
   const currentDate = new Date();
@@ -57,48 +57,37 @@ const Attendance = ({navigation, route}) => {
 
   const docRef = doc(collection(db, type.type), year, month[m - 1], day);
 
-  const Present = async (contact, name) => {
-    setClicked({...clicked, [contact]: true});
-    setAttendanceList(prevAttendanceList => [
-      ...prevAttendanceList,
-      {
-        contact,
-        status: {
-          classLocation: storage.getString('classLocation'),
-          attendance: 'P',
-          contact: contact,
-          name: name,
-        },
-      },
-    ]);
-  };
+  const handleAttendance = (contact, name) => {
+    const newClicked = {...clicked};
+    newClicked[contact] = !newClicked[contact];
+    setClicked(newClicked);
 
-  const Absent = async (contact, name) => {
-    setClicked({...clicked, [contact]: true});
-    setAttendanceList(prevAttendanceList => [
-      ...prevAttendanceList,
-      {
+    const newAttendanceList = [...attendanceList];
+    const existingIndex = newAttendanceList.findIndex(
+      item => item.contact === contact,
+    );
+    if (existingIndex !== -1) {
+      newAttendanceList.splice(existingIndex, 1);
+    }
+    newAttendanceList.push({
+      contact,
+      status: {
+        classLocation: storage.getString('classLocation'),
+        attendance: newClicked[contact] ? 'P' : 'A',
         contact,
-        status: {
-          classLocation: storage.getString('classLocation'),
-          attendance: 'A',
-          contact: contact,
-          name: name,
-        },
+        name,
       },
-    ]);
+    });
+    setAttendanceList(newAttendanceList);
   };
 
   const sendAtt = async () => {
     try {
-      let updatedAttendanceList = attendanceList;
-
       const initialAttendanceData = {};
-      updatedAttendanceList.forEach(record => {
+      attendanceList.forEach(record => {
         initialAttendanceData[record.contact] = record.status;
       });
       await updateDoc(docRef, initialAttendanceData);
-
       setAttendanceList([]);
       alert('Attendance data sent successfully.');
     } catch (error) {
@@ -134,12 +123,10 @@ const Attendance = ({navigation, route}) => {
         where('classLocation', '==', storage.getString('classLocation')),
       );
       const querySnapshot = await getDocs(q);
-
       const filteredStudents = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-
       setStuList(filteredStudents);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -156,23 +143,18 @@ const Attendance = ({navigation, route}) => {
         {title[0]}
       </Text>
 
-      {!clicked[title[1]] ? (
-        <View style={Styles.btnAllign}>
-          <TouchableOpacity onPress={() => Absent(title[1], title[0])}>
-            <Image
-              style={Styles.icon}
-              source={require('../images/imgFalse.png')}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => Present(title[1], title[0])}>
-            <Image
-              style={Styles.icon}
-              source={require('../images/imgTrue.png')}
-            />
-          </TouchableOpacity>
-        </View>
-      ) : null}
+      <View style={Styles.btnAllign}>
+        <TouchableOpacity onPress={() => handleAttendance(title[1], title[0])}>
+          <Image
+            style={Styles.icon}
+            source={
+              clicked[title[1]] // Check if the item is clicked
+                ? require('../images/imgTrue.png') // Use the checked image if clicked
+                : require('../images/imgFalse.png') // Use the unchecked image if not clicked (defaulting to absent)
+            }
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 

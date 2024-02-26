@@ -56,7 +56,14 @@ const LoginForm = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={Styles.parent}>
+    <SafeAreaView
+      style={{
+        padding: 20,
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: -80,
+        height: '100%',
+      }}>
       <View style={[{display: 'flex', flexDirection: 'row'}]}>
         <View>
           <Text style={{color: 'black', fontSize: 80, fontWeight: 900}}>

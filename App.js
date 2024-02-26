@@ -20,6 +20,7 @@ import Login from './screens/Login';
 import LoginForm from './screens/LoginForm';
 import ViewFees from './screens/ViewFees';
 import ViewAttendance from './screens/ViewAttendance';
+import AttendanceScreen from './screens/AttendanceScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,11 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AttendanceScreen"
+          component={AttendanceScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen

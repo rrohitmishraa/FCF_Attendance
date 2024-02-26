@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 const textColor = 'black';
-const bgColor = 'rgba(239,239,239,0.9)';
+const bgColor = 'rgba(239,239,239, 0)';
 const red = 'red';
 
 export default StyleSheet.create({
@@ -64,16 +64,15 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   centerBtn: {
-    height: 120,
-    width: 120,
-    marginRight: 30,
-    marginBottom: -20,
+    height: 25,
+    width: 25,
   },
   centerBtnTxt: {
     color: textColor,
     fontWeight: 'bold',
-    marginTop: 20,
-    fontSize: 20,
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'center',
   },
   btnBack: {
     height: 20,
@@ -129,16 +128,15 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   btnSelect: {
-    width: '100%',
+    height: 90,
+    width: 90,
+    padding: 0,
     display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,1)',
     marginTop: 20,
-    overflow: 'hidden',
-    elevation: 1,
-    borderRadius: 12,
-    paddingLeft: 20,
-    paddingTop: 20,
-    paddingRight: 20,
+    borderRadius: 100,
+    borderWidth: 5,
   },
 });
