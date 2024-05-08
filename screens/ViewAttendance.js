@@ -1,23 +1,26 @@
 import {FlatList, TouchableOpacity, View, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Styles from '../Styles';
-import {Text} from 'react-native-paper';
+import {Modal, Text} from 'react-native-paper';
 import {doc, getDoc, collection} from '@firebase/firestore';
 import {db} from '../firebase';
 import {useEffect, useState} from 'react';
 import {MMKV} from 'react-native-mmkv';
+import {Calendar} from 'react-native-calendars';
 
 export const storage = new MMKV();
 
 const ViewAttendance = ({navigation, route}) => {
   const [feesList, setFeesList] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+
   const currentDate = new Date();
   const year = currentDate.getFullYear().toString();
   const m = (currentDate.getMonth() + 1).toString();
   const day = currentDate.getDate().toString();
   const type = route.params;
 
-  let month = [
+  const month = [
     'Jan',
     'Feb',
     'Mar',
@@ -32,9 +35,13 @@ const ViewAttendance = ({navigation, route}) => {
     'Dec',
   ];
 
-  const fetchStudents = async () => {
+  const [selectedMonth, setSelectedMonth] = useState(month[m - 1]);
+  const [selectedYear, setSelectedYear] = useState(year);
+  const [selectedDate, setSelectedDate] = useState(day);
+
+  const fetchStudents = async (newYear, newMonth, newDate) => {
     try {
-      const docRef = doc(collection(db, type.type), year, month[m - 1], day);
+      const docRef = doc(collection(db, type.type), newYear, newMonth, newDate);
       const docSnapshot = await getDoc(docRef);
 
       if (docSnapshot.exists()) {
@@ -42,10 +49,12 @@ const ViewAttendance = ({navigation, route}) => {
         const a = Object.values(mapData);
         setFeesList(a);
       } else {
-        console.log('Document does not exist');
+        alert('Document does not exist');
+        setFeesList('');
       }
     } catch (error) {
       console.error('Error fetching students:', error);
+      setFeesList('');
     }
   };
 
@@ -112,7 +121,7 @@ const ViewAttendance = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchStudents(selectedYear, selectedMonth, selectedDate);
   }, []);
 
   return (
@@ -126,9 +135,29 @@ const ViewAttendance = ({navigation, route}) => {
             />
           </TouchableOpacity>
 
-          <Text style={Styles.heading}>
-            {type.type} List for {month[m - 1] + ', ' + day}
-          </Text>
+          <Text style={Styles.heading}>{type.type} List for </Text>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '100%',
+            }}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: 'black',
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingRight: 20,
+                paddingLeft: 20,
+                borderRadius: 10,
+              }}
+              onPress={() => setShowModal(true)}>
+              <Text style={[Styles.heading, {color: 'white', fontSize: 20}]}>
+                {selectedDate + ' ' + selectedMonth + ', ' + selectedYear}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <FlatList
@@ -142,6 +171,43 @@ const ViewAttendance = ({navigation, route}) => {
           )}
           keyExtractor={(item, index) => index.toString()}
         />
+
+        <Modal
+          visible={showModal}
+          style={{
+            backgroundColor: 'white',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              fontSize: 30,
+              width: '100%',
+              textAlign: 'center',
+              marginBottom: 40,
+            }}>
+            Click on the date to select
+          </Text>
+
+          <Calendar
+            onDayPress={date => {
+              const newMonth = month[date['month'] - 1];
+              const newYear = date.year.toString();
+              const newDate = date.day.toString();
+
+              setSelectedMonth(newMonth);
+              setSelectedYear(newYear);
+              setSelectedDate(newDate);
+
+              setShowModal(false);
+              fetchStudents(newYear, newMonth, newDate);
+            }}
+            minDate={'2024-01-01'}
+            maxDate={'2040-12-31'}
+            hideExtraDays={true}
+          />
+        </Modal>
       </SafeAreaView>
     </View>
   );

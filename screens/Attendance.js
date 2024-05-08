@@ -189,7 +189,7 @@ const Attendance = ({navigation, route}) => {
         </View>
 
         <FlatList
-          style={{height: '90%'}}
+          style={{height: '100', marginBottom: 150}}
           data={stuList}
           renderItem={({item}) => <Item title={[item.name, item.contact]} />}
           keyExtractor={item => item.id}
@@ -197,9 +197,18 @@ const Attendance = ({navigation, route}) => {
       </SafeAreaView>
 
       <TouchableOpacity
-        style={[Styles.floatingBtn, {width: 180, padding: 0}]}
+        style={[
+          Styles.floatingBtn,
+          {
+            width: 160,
+            height: 60,
+            padding: 0,
+            marginBottom: 20,
+            marginRight: 20,
+          },
+        ]}
         onPress={() => sendAtt()}>
-        <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>
+        <Text style={{fontSize: 14, color: 'white', fontWeight: 'bold'}}>
           SAVE ATTENDANCE
         </Text>
       </TouchableOpacity>

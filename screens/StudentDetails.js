@@ -1,4 +1,4 @@
-import {Image, Pressable, Text, View} from 'react-native';
+import {Image, Linking, Pressable, Text, View} from 'react-native';
 import Styles from '../Styles';
 import {getDoc, doc} from '@firebase/firestore';
 import {db} from '../firebase';
@@ -33,6 +33,10 @@ export default function StudentDetails({navigation, route}) {
     fetchStudent();
   }, []);
 
+  OpenWeb = () => {
+    Linking.openURL('https://wa.me/91' + data.contact + '?text=hello');
+  };
+
   return (
     <View style={Styles.parent}>
       <View style={Styles.navBar}>
@@ -48,8 +52,21 @@ export default function StudentDetails({navigation, route}) {
 
       <View>
         <Text style={{color: 'black', fontSize: 18}}>
-          Contact: {data.contact}
+          Contact: {data.contact} {'\n'}
+          Age: {data.age} {'\n'}
+          Blood Group: {data.blood} {'\n'}
+          Gender: {data.gender} {'\n'}
+          Joining Date: {data.joiningDate} {'\n'}
+          Height: {data.stuHeight} {'\n'}
+          Weight: {data.stuWeight} {'\n'}
         </Text>
+
+        <Pressable onPress={() => OpenWeb()}>
+          <Image
+            style={{height: 60, width: 60}}
+            source={require('../images/whatsapp.png')}
+          />
+        </Pressable>
       </View>
     </View>
   );
