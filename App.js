@@ -27,7 +27,6 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      {/* Lisht Statusbar */}
       <StatusBar
         backgroundColor="rgba(239,239,239,1)"
         barStyle="dark-content"
